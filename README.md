@@ -12,7 +12,7 @@ Use Node 22.13 or newer. Run `npm install`, `npm run dev`, and `npm run build`. 
 
 1. Open your private Sheet and choose **Extensions → Apps Script**.
 2. Paste `integrations/GoogleSheets.gs` and save.
-3. Run `initializeSheet` once and authorize it in your Google account.
+3. Run `initializeSheet` once and authorize it in your Google account. It saves the bound Sheet ID in private Apps Script properties; no Sheet ID is published in this repository.
 4. Deploy as a **Web app**, executing as **Me**, with access set to **Anyone**. Your Sheet itself stays **Restricted**. The script only accepts submissions and never returns student records.
 5. Copy the deployed Web app URL ending in `/exec`.
 6. Paste that URL into `public/enrollment-config.json`. Set `enrollmentOpen` to `true` after checking the connection.
