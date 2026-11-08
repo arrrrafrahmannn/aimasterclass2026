@@ -30,7 +30,8 @@ export default function Home(){
   const [open,setOpen]=useState<boolean|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[reference,setReference]=useState('');
   const dialogRef=useRef<HTMLDialogElement>(null),policyTrigger=useRef<HTMLElement|null>(null),startedAt=useRef(Date.now()),endpoint=useRef('');
   useEffect(()=>{fetch(import.meta.env.BASE_URL+'enrollment-config.json').then(r=>r.json() as Promise<{appsScriptUrl:string;enrollmentOpen:boolean}>).then(d=>{endpoint.current=d.appsScriptUrl;setOpen(d.enrollmentOpen && /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(d.appsScriptUrl));}).catch(()=>setOpen(false));
-    const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');observer.unobserve(e.target);}}),{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));return()=>observer.disconnect();},[]);
+    if(typeof IntersectionObserver==='undefined')return;
+    const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');observer.unobserve(e.target);}}),{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));document.documentElement.classList.add('motion-ready');return()=>{observer.disconnect();document.documentElement.classList.remove('motion-ready');};},[]);
   useEffect(()=>{if(policy){policyTrigger.current=document.activeElement as HTMLElement;dialogRef.current?.showModal();}else{dialogRef.current?.close();policyTrigger.current?.focus();}},[policy]);
   async function copy(){try{await navigator.clipboard.writeText('01893291245');setCopied(true);setTimeout(()=>setCopied(false),2200);}catch{setError('Copy manually: 01893291245');}}
   async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();if(busy || open!==true)return;setError('');setBusy(true);const f=new FormData(e.currentTarget);try{

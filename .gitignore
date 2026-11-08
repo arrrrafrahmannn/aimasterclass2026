@@ -1,5 +1,6 @@
 node_modules
 dist/
+.prerender/
 .env*
 *.tsbuildinfo
 .DS_Store

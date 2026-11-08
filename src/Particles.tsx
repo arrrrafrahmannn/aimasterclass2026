@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 export default function Particles() {
   const ref=useRef<HTMLCanvasElement>(null);
   useEffect(()=>{
+    try {
     const canvas=ref.current;if(!canvas)return;
     const gl=canvas.getContext('webgl',{alpha:true,antialias:true,powerPreference:'low-power'});if(!gl){canvas.dataset.renderer='canvas';return drawFallback(canvas);}
     const vertex=`attribute vec3 a_seed; uniform float u_time; uniform float u_aspect; uniform vec2 u_mouse; varying vec4 v_color;
@@ -30,6 +31,7 @@ export default function Particles() {
     let visible=true;const intersection=new IntersectionObserver(([e])=>{visible=e.isIntersecting;});intersection.observe(canvas);
     const draw=(stamp:number)=>{frame=requestAnimationFrame(draw);if(!visible||document.hidden||stamp-last<30)return;elapsed+=Math.min(stamp-last,50)/1000;last=stamp;gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform1f(time,reduced.matches?0:elapsed);gl.uniform2f(mouse,reduced.matches?0:mx,reduced.matches?0:my);gl.drawArrays(gl.LINES,0,count*2);};frame=requestAnimationFrame(draw);
     return()=>{cancelAnimationFrame(frame);observer.disconnect();intersection.disconnect();window.removeEventListener('pointermove',move);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);};
+    }catch{ /* Optional visual effects must never prevent the page from rendering. */ }
   },[]);
   return <canvas ref={ref} className="particle-canvas" aria-hidden="true"/>;
 }
